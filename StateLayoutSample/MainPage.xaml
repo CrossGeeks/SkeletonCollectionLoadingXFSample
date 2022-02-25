@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StateLayoutSample.MainPage"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:controls="clr-namespace:StateLayoutSample.Controls"
+             Title="Users">
+     <ContentPage.Resources>
+         <ResourceDictionary>
+             <Style TargetType="controls:SkeletonView">
+                <Setter Property="BackgroundColor" Value="#E4E4E4"/>
+                <Setter Property="CornerRadius" Value="4" />
+                <Setter Property="HorizontalOptions" Value="Start" />
+            </Style>
+
+             <Style TargetType="BoxView" x:Key="SeparatorLine">
+                <Setter Property="Color" Value="LightGray"/>
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                <Setter Property="HeightRequest" Value="1" />
+            </Style>
+
+             <DataTemplate x:Key="EmptyUserTemplate">
+                    <Grid ColumnDefinitions="Auto, *"
+                          RowDefinitions="Auto, Auto, Auto, 1"
+                          ColumnSpacing="10"
+                          RowSpacing="5"
+                          Padding="0,10">
+
+                            <controls:SkeletonView Grid.Column="0"
+                                                   Grid.Row="0"
+                                                   Grid.RowSpan="3"
+                                                   Margin="20,0,0,10"
+                                                   HeightRequest="70"
+                                                   WidthRequest="70"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center">
+                                <controls:SkeletonView.Clip>
+                                            <EllipseGeometry
+                                                Center="35,35"
+                                                RadiusX="35"
+                                                RadiusY="35"/>
+                                        </controls:SkeletonView.Clip>
+
+                            </controls:SkeletonView>
+
+                            <controls:SkeletonView Grid.Column="1"
+                                                   Grid.Row="0"
+                                                   HeightRequest="16"
+                                                   WidthRequest="150"/>
+
+                            <controls:SkeletonView Grid.Column="1"
+                                                   Grid.Row="1"
+                                                   HeightRequest="16"
+                                                   WidthRequest="250"/>
+
+                            <controls:SkeletonView Grid.Column="1"
+                                                   Grid.Row="2"
+                                                   WidthRequest="150"
+                                                   HeightRequest="16"
+                                                   VerticalOptions="Start"/>
+
+                            <BoxView Style="{StaticResource SeparatorLine}"
+                                     Grid.Column="0"
+                                     Grid.Row="3"
+                                     Grid.ColumnSpan="2"/>
+                        </Grid>
+                    </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout xct:StateLayout.CurrentState="{Binding CurrentState}"
+                 xct:StateLayout.AnimateStateChanges="False">
+
+         <xct:StateLayout.StateViews>
+             <xct:StateView StateKey="Loading"
+                            RepeatCount="8"
+                            Template="{StaticResource EmptyUserTemplate}">
+            </xct:StateView>
+        </xct:StateLayout.StateViews>
+       
+        <CollectionView ItemsSource="{Binding Users}"
+                         RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}"
+                         RemainingItemsThreshold="{Binding ItemThreshold}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="Auto, *"
+                          RowDefinitions="Auto, Auto, Auto, 1"
+                          ColumnSpacing="10"
+                          RowSpacing="5"
+                          Padding="0,10">
+
+                        <Image Source="{Binding Photo}"
+                               Margin="20,0,0,10"
+                                HeightRequest="70"
+                                WidthRequest="70"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                Grid.RowSpan="3"
+                                Grid.Row="0"
+                                Grid.Column="0">
+                            <Image.Clip>
+                                        <EllipseGeometry
+                                            Center="35,35"
+                                            RadiusX="35"
+                                            RadiusY="35"/>
+                                    </Image.Clip>
+                        </Image>
+
+                        <Label Text="{Binding Name}"
+                               FontAttributes="Bold"
+                               Grid.Column="1"
+                               Grid.Row="0"/>
+
+                        <Label Text="{Binding Email}"
+                               Grid.Column="1"
+                               Grid.Row="1"/>
+
+                        <Label Text="{Binding Phone}"
+                               Grid.Column="1"
+                               Grid.Row="2"/>
+
+                        <BoxView Style="{StaticResource SeparatorLine}"
+                                 Grid.Column="0"
+                                 Grid.Row="3"
+                                 Grid.ColumnSpan="2"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <CollectionView.Footer>
+                    <StackLayout BindableLayout.ItemTemplate="{DynamicResource EmptyUserTemplate}"
+                                 IsVisible="{Binding IsLoadingMore}">
+                        <BindableLayout.ItemsSource>
+                             <x:Array  Type="{x:Type x:Int32}">
+                                <x:Int32>0</x:Int32>
+                            </x:Array>
+                        </BindableLayout.ItemsSource>
+                    </StackLayout>
+                </CollectionView.Footer>
+        </CollectionView>
+    </StackLayout>
+</ContentPage>
