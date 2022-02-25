@@ -1,4 +1,4 @@
-# Skeleton loading Sample using StateLayout in Xamarin Forms
+# Skeleton loading sample using stateLayout in Xamarin Forms
 
 <p align="center">
 <img width="200" height:"600" src="android.gif" />
